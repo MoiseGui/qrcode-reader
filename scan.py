@@ -26,12 +26,12 @@ import time
 from PIL import Image
 import cv2
 
-def ouvir():
-    print("Ouverture de la porte")
+def ouvrir():
+    print("Ouverture de la porte...")
     time.sleep(3)
     
 def fermer():
-    print("Fermetture de la porte")
+    print("Fermetture de la porte...")
     time.sleep(3)
     
 
@@ -41,7 +41,8 @@ def demande():
     r = requests.get(URL_ETUDIANT)
     data_etu=r.json()
     
-    if str(data_etu) == "true":
+    print(str(data_etu))
+    if str(data_etu) == "True":
         print("Demande acceptée")
         ouvrir()
         time.sleep(3)
@@ -79,13 +80,13 @@ def main():
             #codes = zbarlight.scan_codes('qrcode', pil_im)
             codes = zbarlight.scan_codes(['qrcode', 'EAN8', 'EAN13', 'UPCE', 'UPCA', 'ISBN10', 'ISBN13', 'I25', 'CODE39', 'CODE128', 'PDF417'], pil_im)
 
+            print(codes)
             if codes:
+                print("Après")
                 print('QR CODE détecté et décodé..')
                 print(codes)
                 pause = True
                 demande()
-                pause = False
-                
         
 
         key = cv2.waitKey(1)
