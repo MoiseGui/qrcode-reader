@@ -19,11 +19,36 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
+import requests
 import zbarlight
+import time
 
 from PIL import Image
 import cv2
+
+def ouvir():
+    print("Ouverture de la porte")
+    time.sleep(3)
+    
+def fermer():
+    print("Fermetture de la porte")
+    time.sleep(3)
+    
+
+def demande():
+    print("Demande d'autorisation pour ouvrir la porte")
+    URL_ETUDIANT="http://479791e0c179.ngrok.io/open-door/door/"+str(1)+"/etudiant/"+"X000000510"
+    r = requests.get(URL_ETUDIANT)
+    data_etu=r.json()
+    
+    if str(data_etu) == "true":
+        print("Demande acceptée")
+        ouvrir()
+        time.sleep(3)
+        fermer()
+    else:
+        print("Demande refusée")
+    
 
 
 def main():
@@ -42,7 +67,7 @@ def main():
         if pause == False:    
             ret, frame = capture.read()
         # Displays the current frame
-            cv2.imshow('Current', frame)
+            cv2.imshow('QR READER', frame)
 
             # Converts image to grayscale.
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -55,9 +80,12 @@ def main():
             codes = zbarlight.scan_codes(['qrcode', 'EAN8', 'EAN13', 'UPCE', 'UPCA', 'ISBN10', 'ISBN13', 'I25', 'CODE39', 'CODE128', 'PDF417'], pil_im)
 
             if codes:
-                print('HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+                print('QR CODE détecté et décodé..')
                 print(codes)
                 pause = True
+                demande()
+                pause = False
+                
         
 
         key = cv2.waitKey(1)
